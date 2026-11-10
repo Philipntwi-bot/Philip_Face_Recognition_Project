@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philip Neural Face Identifier // Ultralytics YOLOv8</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg-void: #030712;
+        --card-bg: rgba(15, 23, 42, 0.7);
+        --card-border: rgba(56, 189, 248, 0.25);
+        --neon-cyan: #38bdf8;
+        --neon-purple: #a855f7;
+        --neon-emerald: #10b981;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+        background-color: var(--bg-void);
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        padding-bottom: 80px;
+    }
+
+    /* Ambient Glows */
+    .glow-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(140px);
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.35;
+    }
+    .orb-cyan {
+        width: 600px;
+        height: 600px;
+        top: -150px;
+        right: -100px;
+        background: radial-gradient(circle, #38bdf8, transparent);
+    }
+    .orb-purple {
+        width: 550px;
+        height: 550px;
+        bottom: -150px;
+        left: -100px;
+        background: radial-gradient(circle, #a855f7, transparent);
+    }
+
+    .container {
+        position: relative;
+        z-index: 2;
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 50px 24px;
+    }
+
+    /* HUD Top Bar */
+    .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 18px;
+        border-radius: 9999px;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        backdrop-filter: blur(12px);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: #7dd3fc;
+    }
+
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 10px #10b981;
+        animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .title-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 52px;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        line-height: 1.1;
+        margin-bottom: 16px;
+    }
+
+    .glow-cyan-text {
+        background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
+    }
+
+    header p {
+        color: var(--text-secondary);
+        font-size: 17px;
+        max-width: 680px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Video & Canvas Detection Stage */
+    .detection-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 28px;
+        padding: 36px;
+        backdrop-filter: blur(24px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+        margin-bottom: 35px;
+        text-align: center;
+    }
+
+    .viewport-box {
+        position: relative;
+        max-width: 680px;
+        margin: 0 auto 28px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 2px dashed rgba(56, 189, 248, 0.4);
+        background: rgba(10, 15, 30, 0.8);
+        min-height: 380px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #previewImage, #videoStream {
+        width: 100%;
+        max-height: 480px;
+        object-fit: contain;
+        display: block;
+        border-radius: 18px;
+    }
+
+    #detectionCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .control-actions {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 14px;
+        padding: 14px 24px;
+        color: #fff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-action:hover {
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .btn-primary-action {
+        background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #818cf8 100%);
+        border: none;
+        box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Telemetry specs */
+    .telemetry-deck {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-top: 30px;
+    }
+
+    .telemetry-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .telemetry-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .telemetry-val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 15px;
+        font-weight: 700;
+        color: #f1f5f9;
+    }
+
+    footer {
+        text-align: center;
+        color: #64748b;
+        font-size: 14px;
+        margin-top: 40px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="glow-orb orb-cyan"></div>
+<div class="glow-orb orb-purple"></div>
+
+<main class="container">
+
+    <div class="top-nav">
+        <div class="status-pill">
+            <span class="pulse-dot"></span>
+            <span>ULTRALYTICS HUB // YOLOV8 FACE RECOGNITION</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono'; color: #64748b; font-size: 13px;">CLASS: PHILIP</div>
+    </div>
+
+    <header>
+        <span class="title-tag">// COMPUTER VISION INFERENCE MATRIX</span>
+        <h1>Philip Face <span class="glow-cyan-text">Recognition AI</span></h1>
+        <p>Real-time edge detection and custom facial biometric identification powered by Ultralytics YOLOv8 architecture.</p>
+    </header>
+
+    <section class="detection-card">
+        <div class="viewport-box" id="viewportBox">
+            <div id="placeholderText" style="color: #64748b; font-size: 15px;">
+                📷 Upload an image or activate the webcam to run neural detection
+            </div>
+            <img id="previewImage" style="display: none;" alt="Prediction View">
+            <video id="videoStream" autoplay playsinline style="display: none;"></video>
+            <canvas id="detectionCanvas"></canvas>
+        </div>
+
+        <div class="control-actions">
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            <button class="btn-action" onclick="document.getElementById('fileInput').click()">
+                📁 Upload Image
+            </button>
+            <button class="btn-action" id="webcamBtn" onclick="toggleWebcam()">
+                📹 Activate Webcam
+            </button>
+            <button class="btn-action btn-primary-action" id="detectBtn" onclick="runDetection()">
+                ⚡ RUN FACE INFERENCE
+            </button>
+        </div>
+
+        <div class="telemetry-deck">
+            <div class="telemetry-card">
+                <div class="telemetry-label">Model Backbone</div>
+                <div class="telemetry-val">YOLOv8 Nano</div>
+            </div>
+            <div class="telemetry-card">
+                <div class="telemetry-label">Dataset Source</div>
+                <div class="telemetry-val">Ultralytics Hub</div>
+            </div>
+            <div class="telemetry-card">
+                <div class="telemetry-label">Identified Target</div>
+                <div class="telemetry-val" style="color: #38bdf8;">Philip</div>
+            </div>
+            <div class="telemetry-card">
+                <div class="telemetry-label">Inference Status</div>
+                <div class="telemetry-val" id="telemetryStatus" style="color: #10b981;">Online</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        Philip Face Recognition AI Project • Ultralytics YOLOv8 • Pentecost University
+    </footer>
+
+</main>
+
+<script>
+    let webcamActive = false;
+    let video = document.getElementById('videoStream');
+    let previewImg = document.getElementById('previewImage');
+    let placeholder = document.getElementById('placeholderText');
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            stopWebcam();
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                previewImg.src = evt.target.result;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                video.style.display = 'none';
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+
+    async function toggleWebcam() {
+        if (!webcamActive) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                previewImg.style.display = 'none';
+                placeholder.style.display = 'none';
+                document.getElementById('webcamBtn').textContent = '⏹ Stop Webcam';
+                webcamActive = true;
+            } catch (err) {
+                alert("Webcam error: " + err.message);
+            }
+        } else {
+            stopWebcam();
+        }
+    }
+
+    function stopWebcam() {
+        if (webcamActive && video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+            video.style.display = 'none';
+            document.getElementById('webcamBtn').textContent = '📹 Activate Webcam';
+            webcamActive = false;
+        }
+    }
+
+    function runDetection() {
+        // Will connect to YOLOv8 inference endpoint once model finishes training
+        alert("Model inference engine ready! Once you export the dataset from Ultralytics Hub and train, real-time bounding boxes will lock onto Philip's face.");
+    }
+</script>
+
+</body>
+</html>
+
