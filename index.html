@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
     :root {
@@ -163,7 +164,7 @@
         overflow: hidden;
         border: 2px dashed rgba(56, 189, 248, 0.4);
         background: rgba(10, 15, 30, 0.8);
-        min-height: 380px;
+        min-height: 400px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -221,6 +222,20 @@
         box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
     }
 
+    /* Detection Result Box */
+    .detection-result-box {
+        margin-top: 24px;
+        padding: 18px 24px;
+        border-radius: 16px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: #6ee7b7;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        display: none;
+    }
+
     /* Telemetry specs */
     .telemetry-deck {
         display: grid;
@@ -273,7 +288,7 @@
             <span class="pulse-dot"></span>
             <span>ULTRALYTICS HUB // YOLOV8 FACE RECOGNITION</span>
         </div>
-        <div style="font-family: 'JetBrains Mono'; color: #64748b; font-size: 13px;">CLASS: PHILIP</div>
+        <div style="font-family: 'JetBrains Mono'; color: #64748b; font-size: 13px;">TARGET_CLASS: PHILLIP</div>
     </div>
 
     <header>
@@ -300,9 +315,13 @@
             <button class="btn-action" id="webcamBtn" onclick="toggleWebcam()">
                 📹 Activate Webcam
             </button>
-            <button class="btn-action btn-primary-action" id="detectBtn" onclick="runDetection()">
+            <button class="btn-action btn-primary-action" id="detectBtn" onclick="captureAndDetect()">
                 ⚡ RUN FACE INFERENCE
             </button>
+        </div>
+
+        <div id="resultMessage" class="detection-result-box">
+            🎯 TARGET IDENTIFIED: <span id="identifiedLabel">Phillip</span> (<span id="confLabel">98.5%</span> Confidence)
         </div>
 
         <div class="telemetry-deck">
@@ -311,22 +330,22 @@
                 <div class="telemetry-val">YOLOv8 Nano</div>
             </div>
             <div class="telemetry-card">
-                <div class="telemetry-label">Dataset Source</div>
-                <div class="telemetry-val">Ultralytics Hub</div>
+                <div class="telemetry-label">Training Dataset</div>
+                <div class="telemetry-val">772 Annotated Images</div>
             </div>
             <div class="telemetry-card">
-                <div class="telemetry-label">Identified Target</div>
-                <div class="telemetry-val" style="color: #38bdf8;">Philip</div>
+                <div class="telemetry-label">Target Class</div>
+                <div class="telemetry-val" style="color: #38bdf8;">Phillip</div>
             </div>
             <div class="telemetry-card">
                 <div class="telemetry-label">Inference Status</div>
-                <div class="telemetry-val" id="telemetryStatus" style="color: #10b981;">Online</div>
+                <div class="telemetry-val" id="telemetryStatus" style="color: #10b981;">Online (Local API)</div>
             </div>
         </div>
     </section>
 
     <footer>
-        Philip Face Recognition AI Project • Ultralytics YOLOv8 • Pentecost University
+        Philip Face Recognition AI Project • Ultralytics YOLOv8 • Pentecost University • Philip Antwi
     </footer>
 
 </main>
@@ -336,25 +355,30 @@
     let video = document.getElementById('videoStream');
     let previewImg = document.getElementById('previewImage');
     let placeholder = document.getElementById('placeholderText');
+    let canvas = document.getElementById('detectionCanvas');
+    let ctx = canvas.getContext('2d');
+    let currentBlob = null;
 
     document.getElementById('fileInput').addEventListener('change', function(e) {
         if (e.target.files && e.target.files[0]) {
             stopWebcam();
+            currentBlob = e.target.files[0];
             const reader = new FileReader();
             reader.onload = function(evt) {
                 previewImg.src = evt.target.result;
                 previewImg.style.display = 'block';
                 placeholder.style.display = 'none';
                 video.style.display = 'none';
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
             };
-            reader.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(currentBlob);
         }
     });
 
     async function toggleWebcam() {
         if (!webcamActive) {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
                 video.srcObject = stream;
                 video.style.display = 'block';
                 previewImg.style.display = 'none';
@@ -378,12 +402,94 @@
         }
     }
 
-    function runDetection() {
-        // Will connect to YOLOv8 inference endpoint once model finishes training
-        alert("Model inference engine ready! Once you export the dataset from Ultralytics Hub and train, real-time bounding boxes will lock onto Philip's face.");
+    async function captureAndDetect() {
+        const detectBtn = document.getElementById('detectBtn');
+        detectBtn.disabled = true;
+        detectBtn.innerHTML = "COMPUTING NEURAL INFERENCE...";
+
+        let formData = new FormData();
+
+        if (webcamActive) {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = video.videoWidth || 640;
+            tempCanvas.height = video.videoHeight || 480;
+            const tCtx = tempCanvas.getContext('2d');
+            tCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+
+            const blob = await new Promise(resolve => tempCanvas.toBlob(resolve, 'image/jpeg'));
+            formData.append('image', blob, 'webcam.jpg');
+        } else if (currentBlob) {
+            formData.append('image', currentBlob);
+        } else {
+            alert("Please upload a photo or activate the webcam first!");
+            detectBtn.disabled = false;
+            detectBtn.innerHTML = "⚡ RUN FACE INFERENCE";
+            return;
+        }
+
+        try {
+            const resp = await fetch("/api/detect", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await resp.json();
+            if (!resp.ok) throw new Error(data.error || "Inference failed");
+
+            // Setup overlay canvas dimensions
+            const targetEl = webcamActive ? video : previewImg;
+            canvas.width = targetEl.clientWidth;
+            canvas.height = targetEl.clientHeight;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (data.detections && data.detections.length > 0) {
+                document.getElementById('resultMessage').style.display = 'block';
+                const first = data.detections[0];
+                document.getElementById('identifiedLabel').textContent = first.class;
+                document.getElementById('confLabel').textContent = first.confidence + "%";
+
+                // Draw bounding boxes
+                for (let d of data.detections) {
+                    const scaleX = canvas.width / (targetEl.naturalWidth || targetEl.videoWidth || canvas.width);
+                    const scaleY = canvas.height / (targetEl.naturalHeight || targetEl.videoHeight || canvas.height);
+
+                    const x1 = d.box.x1 * scaleX;
+                    const y1 = d.box.y1 * scaleY;
+                    const w  = (d.box.x2 - d.box.x1) * scaleX;
+                    const h  = (d.box.y2 - d.box.y1) * scaleY;
+
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 3;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = "#38bdf8";
+                    ctx.strokeRect(x1, y1, w, h);
+
+                    // Label tag
+                    ctx.fillStyle = "#0284c7";
+                    ctx.fillRect(x1, y1 > 25 ? y1 - 25 : y1, 140, 24);
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 13px 'Space Grotesk'";
+                    ctx.fillText(`${d.class} ${d.confidence}%`, x1 + 6, (y1 > 25 ? y1 - 8 : y1 + 17));
+                }
+
+                confetti({
+                    particleCount: 35,
+                    spread: 60,
+                    origin: { y: 0.7 },
+                    colors: ['#38bdf8', '#818cf8', '#10b981']
+                });
+            } else {
+                alert("No face detected in this frame. Please adjust angle or lighting.");
+            }
+
+        } catch (err) {
+            alert("Inference Server Error: " + err.message + "\n(Ensure 'python app.py' is running locally)");
+        } finally {
+            detectBtn.disabled = false;
+            detectBtn.innerHTML = "⚡ RUN FACE INFERENCE";
+        }
     }
 </script>
 
 </body>
 </html>
-

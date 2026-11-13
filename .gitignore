@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+*$py.class
+runs/
+dataset/images/
+yolov8n.pt
+.vscode/
+.idea/
