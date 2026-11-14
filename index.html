@@ -445,7 +445,11 @@
             }
 
             try {
-                const resp = await fetch("/api/detect", {
+                const apiUrl = (window.location.protocol === 'file:' || !window.location.port.includes('5000'))
+                    ? "http://127.0.0.1:5000/api/detect"
+                    : "/api/detect";
+
+                const resp = await fetch(apiUrl, {
                     method: "POST",
                     body: formData
                 });
