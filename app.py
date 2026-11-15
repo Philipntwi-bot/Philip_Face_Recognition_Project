@@ -4,7 +4,7 @@ import cv2
 import torch
 import numpy as np
 from pathlib import Path
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, send_from_directory
 from flask_cors import CORS
 from ultralytics import YOLO
 
@@ -26,6 +26,10 @@ else:
 def index():
     html_file = PROJECT_DIR / "index.html"
     return render_template_string(html_file.read_text(encoding="utf-8"))
+
+@app.route("/figures/<path:filename>")
+def serve_figure(filename):
+    return send_from_directory(PROJECT_DIR / "figures", filename)
 
 @app.route("/api/detect", methods=["POST"])
 def detect():
