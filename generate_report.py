@@ -10,6 +10,7 @@ from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+from docx.opc.constants import RELATIONSHIP_TYPE
 
 PROJECT = Path(r'C:\Users\User\OneDrive\Desktop\MY IA FOR ARTIFICIAL INTELLIGENCE\Philip_Face_Recognition_Project')
 DOCX_PATH = PROJECT / 'Philip_Face_Recognition_Report.docx'
@@ -23,6 +24,41 @@ def set_font(run, size=12, bold=False, italic=False, color=None):
     run.italic = italic
     if color:
         run.font.color.rgb = RGBColor(*color)
+
+def add_hyperlink(paragraph, url, text=None, color='0000EE', underline=True, font_name='Times New Roman', size=11, bold=False):
+    """Add a clickable hyperlink to a paragraph with Word XML styling."""
+    if text is None:
+        text = url
+    part = paragraph.part
+    r_id = part.relate_to(url, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+    hyperlink = OxmlElement('w:hyperlink')
+    hyperlink.set(qn('r:id'), r_id)
+    new_run = OxmlElement('w:r')
+    rPr = OxmlElement('w:rPr')
+    if color:
+        c = OxmlElement('w:color')
+        c.set(qn('w:val'), color)
+        rPr.append(c)
+    if underline:
+        u = OxmlElement('w:u')
+        u.set(qn('w:val'), 'single')
+        rPr.append(u)
+    if bold:
+        b = OxmlElement('w:b')
+        rPr.append(b)
+    rFonts = OxmlElement('w:rFonts')
+    rFonts.set(qn('w:ascii'), font_name)
+    rFonts.set(qn('w:hAnsi'), font_name)
+    rPr.append(rFonts)
+    if size:
+        sz = OxmlElement('w:sz')
+        sz.set(qn('w:val'), str(int(size * 2)))
+        rPr.append(sz)
+    new_run.append(rPr)
+    new_run.text = text
+    hyperlink.append(new_run)
+    paragraph._p.append(hyperlink)
+    return hyperlink
 
 def add_paragraph(doc, text='', align=WD_ALIGN_PARAGRAPH.JUSTIFY, size=12,
                   bold=False, italic=False, space_after=6, color=None):
@@ -125,26 +161,31 @@ p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 run = p.add_run('A Computer Vision & Artificial Intelligence Academic Project Report\nSubmitted in Partial Fulfilment of the Requirements for the\nBSc Information Technology Programme')
 set_font(run, 12, italic=True)
 
-for _ in range(3): doc.add_paragraph()
+for _ in range(2): doc.add_paragraph()
 
 details = [
-    ('Candidate Name', 'Philip Antwi'),
-    ('Student ID / Index No', 'PUIT24120002'),
-    ('Programme of Study', 'BSc Information Technology'),
-    ('Course', 'Artificial Intelligence & Machine Learning'),
-    ('Supervisor / Lecturer', 'Course Instructor / Lecturer in Charge'),
-    ('Academic Year', '2025/2026'),
-    ('Submission Date', 'November 2026'),
+    ('Candidate Name', 'Philip Antwi', False),
+    ('Student ID / Index No', 'PUIT24120002', False),
+    ('Programme of Study', 'BSc Information Technology', False),
+    ('Course', 'Artificial Intelligence & Machine Learning', False),
+    ('Supervisor / Lecturer', 'Course Instructor / Lecturer in Charge', False),
+    ('Academic Year', '2025/2026', False),
+    ('Submission Date', 'November 2026', False),
+    ('Project Repository', 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project', True),
 ]
-for label, value in details:
+for item in details:
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_after = Pt(2)
     p.paragraph_format.line_spacing = Pt(14)
+    label, value, is_link = item
     r1 = p.add_run(f'{label}: ')
     set_font(r1, 11, bold=True)
-    r2 = p.add_run(value)
-    set_font(r2, 11)
+    if is_link:
+        add_hyperlink(p, value, value, size=11, bold=True)
+    else:
+        r2 = p.add_run(value)
+        set_font(r2, 11)
 
 add_pagebreak(doc)
 
@@ -187,6 +228,13 @@ add_paragraph(doc,
     'This research establishes an empirical blueprint for custom biometric edge deployment in institutional and '
     'enterprise attendance systems.'
 )
+
+p_repo = doc.add_paragraph()
+p_repo.paragraph_format.space_before = Pt(12)
+p_repo.paragraph_format.space_after = Pt(4)
+r_repo = p_repo.add_run('Official Project Repository & Open-Access Source Code: ')
+set_font(r_repo, 11, bold=True)
+add_hyperlink(p_repo, 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project', 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project', size=11, bold=True)
 
 add_pagebreak(doc)
 
@@ -667,6 +715,34 @@ add_bullet(doc, 'Real-time Webcam Stream Capture: Uses the HTML5 `navigator.medi
 add_bullet(doc, 'Dual Operational Modes: Users can toggle seamlessly between live video stream detection (3-5 FPS sampling) and high-resolution static photo file analysis.')
 add_bullet(doc, 'Dynamic HUD Overlay: Detected face boundaries are drawn directly onto an interactive HTML5 overlay canvas with animated corner brackets, biometric identity tags ("TARGET: PHILLIP"), confidence percentage gauges, and real-time millisecond inference latency meters.')
 
+add_heading(doc, '10.3 Version Control, Repository & Open Science', level=2)
+add_paragraph(doc,
+    'In accordance with open-science principles and reproducible AI research, the entire project codebase, '
+    'trained neural network checkpoints (philip_face_model.pt), web application assets, synthetic data conversion pipelines, '
+    'and testing harnesses have been made publicly available under version control on GitHub:'
+)
+p_git = doc.add_paragraph()
+p_git.paragraph_format.space_before = Pt(4)
+p_git.paragraph_format.space_after = Pt(6)
+r_git_lbl = p_git.add_run('Project Repository Link: ')
+set_font(r_git_lbl, 11, bold=True)
+add_hyperlink(p_git, 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project', 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project', size=11, bold=True)
+
+add_paragraph(doc,
+    'Lecturers, examiners, and peer evaluators can clone and execute the complete system locally with the following command sequence:'
+)
+git_code = (
+    "git clone https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project.git\n"
+    "cd Philip_Face_Recognition_Project\n"
+    "pip install ultralytics torch flask flask-cors opencv-python\n"
+    "python app.py"
+)
+p_git_code = doc.add_paragraph()
+p_git_code.paragraph_format.space_after = Pt(6)
+r_git_code = p_git_code.add_run(git_code)
+set_font(r_git_code, 9.5)
+r_git_code.font.name = 'Consolas'
+
 add_pagebreak(doc)
 
 # ==============================================================================
@@ -827,24 +903,26 @@ r_api.font.name = 'Consolas'
 
 add_heading(doc, 'Appendix C: Project Resource & Repository Links', level=2)
 links = [
-    ('GitHub Repository', 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project'),
-    ('Ultralytics Hub Dataset', 'https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002'),
+    ('Primary GitHub Repository', 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project'),
+    ('Trained Model Weights (philip_face_model.pt)', 'https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project/blob/main/philip_face_model.pt'),
+    ('Ultralytics Hub Dataset & Annotations', 'https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002'),
     ('Candidate GitHub Profile', 'https://github.com/Philipntwi-bot'),
-    ('Pentecost University Portal', 'https://pentvars.edu.gh/'),
+    ('Pentecost University Official Portal', 'https://pentvars.edu.gh/'),
 ]
 for lbl, lnk in links:
     p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(3)
     r1 = p.add_run(f'{lbl}: ')
     set_font(r1, 11, bold=True)
-    r2 = p.add_run(lnk)
-    set_font(r2, 11)
+    add_hyperlink(p, lnk, lnk, size=11)
 
 # Save Document
 doc.save(str(DOCX_PATH))
 print(f'Academic Report Word Document saved to: {DOCX_PATH}')
 
 # Export to PDF via Word COM
+word = None
+doc_com = None
 try:
     import win32com.client as win32
     print("Initiating Microsoft Word COM automation for native PDF export...")
@@ -867,10 +945,19 @@ try:
         
     # wdFormatPDF = 17
     doc_com.SaveAs2(str(PDF_PATH), FileFormat=17)
-    doc_com.Close(False)
-    word.Quit()
     print(f'Academic Report PDF successfully generated: {PDF_PATH}')
 except Exception as e:
     print(f'Word COM export notice: {e}')
+finally:
+    if doc_com is not None:
+        try:
+            doc_com.Close(False)
+        except Exception:
+            pass
+    if word is not None:
+        try:
+            word.Quit()
+        except Exception:
+            pass
 
 print("PROCESS_COMPLETE")

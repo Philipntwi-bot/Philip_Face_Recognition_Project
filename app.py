@@ -31,6 +31,13 @@ def index():
 def serve_figure(filename):
     return send_from_directory(PROJECT_DIR / "figures", filename)
 
+@app.route("/<path:filename>")
+def serve_root_file(filename):
+    file_path = PROJECT_DIR / filename
+    if file_path.exists() and file_path.is_file():
+        return send_from_directory(PROJECT_DIR, filename)
+    return jsonify({"error": "File not found"}), 404
+
 @app.route("/api/detect", methods=["POST"])
 def detect():
     try:
