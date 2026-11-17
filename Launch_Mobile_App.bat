@@ -1,9 +1,9 @@
 @echo off
-title Philip Face AI - Mobile App Simulator
+title Philip Face AI - Mobile App Server
 cd /d "%~dp0"
 echo ========================================================
-echo   LAUNCHING PHILIP FACE AI MOBILE SIMULATOR
-echo   Ultralytics YOLOv8 Biometric Engine (Level 400)
+echo   LAUNCHING PHILIP FACE AI MOBILE SERVER
+echo   Local URL: http://localhost:8080/mobile_simulator.html
 echo ========================================================
-start "" "mobile_simulator.html"
-exit
+python serve_mobile.py
+pause
