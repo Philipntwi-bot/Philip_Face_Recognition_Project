@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philip Face AI // Mobile Smartphone Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #060a13;
+            --neon-cyan: #38bdf8;
+            --neon-blue: #0284c7;
+            --gold-accent: #f59e0b;
+            --panel-bg: rgba(15, 23, 42, 0.85);
+            --border-glow: rgba(56, 189, 248, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 10%, #0f172a 0%, #030712 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px 40px;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glows */
+        .ambient-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
+            top: 15%;
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        /* Top Desktop Toolbar */
+        .top-toolbar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            width: 100%;
+            max-width: 1080px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 18px;
+            padding: 14px 22px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+        }
+
+        .brand-text h1 {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .brand-text p {
+            font-size: 11px;
+            color: var(--neon-cyan);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            background: rgba(30, 41, 59, 0.8);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .tool-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: var(--neon-cyan);
+            color: #38bdf8;
+            transform: translateY(-2px);
+        }
+
+        .tool-btn-primary {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            border-color: #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+        }
+
+        .tool-btn-primary:hover {
+            background: linear-gradient(135deg, #0369a1, #1d4ed8);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+            color: #ffffff;
+        }
+
+        .device-selector {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Smartphone Hardware Chassis */
+        .simulator-stage {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        .phone-chassis {
+            position: relative;
+            width: 393px;
+            height: 820px;
+            background: #0a0f1d;
+            border-radius: 54px;
+            padding: 14px;
+            box-shadow: 
+                0 0 0 4px #262e3d,
+                0 0 0 7px #171d27,
+                0 25px 60px -15px rgba(0, 0, 0, 0.8),
+                0 0 50px rgba(56, 189, 248, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Landscape orientation mode */
+        .phone-chassis.landscape {
+            width: 820px;
+            height: 393px;
+            border-radius: 44px;
+        }
+
+        /* Screen Bezel & Container */
+        .phone-screen {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #030712;
+            border-radius: 42px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Phone Top Status Bar */
+        .phone-status-bar {
+            height: 38px;
+            background: #030712;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #e2e8f0;
+            z-index: 20;
+            user-select: none;
+        }
+
+        /* Dynamic Island / Punch Hole Notch */
+        .dynamic-island {
+            width: 110px;
+            height: 25px;
+            background: #000000;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .island-lens {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #111827;
+            border: 1px solid #1f2937;
+        }
+
+        .island-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #cbd5e1;
+        }
+
+        /* Embedded Live Web App Frame */
+        .app-iframe {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #030712;
+        }
+
+        /* Bottom Home Swipe Bar */
+        .phone-home-bar {
+            height: 18px;
+            background: #030712;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .home-indicator {
+            width: 130px;
+            height: 4.5px;
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .phone-chassis:hover .home-indicator {
+            background: rgba(56, 189, 248, 0.8);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Side Hardware Buttons (Visual realism) */
+        .btn-side {
+            position: absolute;
+            background: #1e293b;
+            border-radius: 3px;
+        }
+
+        .btn-volume-up {
+            left: -10px;
+            top: 130px;
+            width: 5px;
+            height: 52px;
+        }
+
+        .btn-volume-down {
+            left: -10px;
+            top: 195px;
+            width: 5px;
+            height: 52px;
+        }
+
+        .btn-power {
+            right: -10px;
+            top: 160px;
+            width: 5px;
+            height: 75px;
+        }
+
+        /* Footer Info */
+        .simulator-footer {
+            margin-top: 24px;
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .simulator-footer strong {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Top Desktop Controls Toolbar -->
+    <header class="top-toolbar">
+        <div class="brand-title">
+            <div class="brand-badge">📱</div>
+            <div class="brand-text">
+                <h1>PHILIP FACE AI // MOBILE SIMULATOR</h1>
+                <p>ULTRALYTICS YOLOV8 NANO BIOMETRIC ENGINE (PUIT24120002)</p>
+            </div>
+        </div>
+
+        <div class="toolbar-actions">
+            <!-- Device Size Selector -->
+            <select class="device-selector" id="deviceSelect" onchange="changeDevice()">
+                <option value="393x820">📱 iPhone 16 Pro (393 × 820)</option>
+                <option value="412x880">📱 Samsung Galaxy S25 (412 × 880)</option>
+                <option value="360x780">📱 Compact Android (360 × 780)</option>
+                <option value="768x960">📱 iPad / Tablet (768 × 960)</option>
+            </select>
+
+            <button class="tool-btn" onclick="toggleOrientation()">
+                🔄 Rotate Screen
+            </button>
+
+            <button class="tool-btn" onclick="reloadApp()">
+                ⚡ Refresh App
+            </button>
+
+            <a class="tool-btn tool-btn-primary" href="Philip_Face_AI.apk" download="Philip_Face_AI.apk">
+                ⬇️ Download APK (3.2 MB)
+            </a>
+
+            <a class="tool-btn" href="index.html" target="_blank">
+                🖥️ Open Full Desktop View
+            </a>
+        </div>
+    </header>
+
+    <!-- Smartphone Hardware Chassis Simulation -->
+    <main class="simulator-stage">
+        <div class="phone-chassis" id="phoneChassis">
+            <!-- Hardware Buttons -->
+            <div class="btn-side btn-volume-up"></div>
+            <div class="btn-side btn-volume-down"></div>
+            <div class="btn-side btn-power"></div>
+
+            <!-- Screen Container -->
+            <div class="phone-screen">
+                <!-- Status Bar -->
+                <div class="phone-status-bar">
+                    <span id="phoneClock">09:41</span>
+                    <div class="dynamic-island">
+                        <div class="island-lens"></div>
+                        <div class="island-indicator" title="Biometric Camera Active"></div>
+                    </div>
+                    <div class="status-icons">
+                        <span>5G</span>
+                        <span>📶</span>
+                        <span>100% 🔋</span>
+                    </div>
+                </div>
+
+                <!-- Embedded Application Iframe -->
+                <iframe 
+                    id="appFrame" 
+                    class="app-iframe" 
+                    src="index.html"
+                    allow="camera; microphone; autoplay; encrypted-media; fullscreen"
+                ></iframe>
+
+                <!-- Home Swipe Bar -->
+                <div class="phone-home-bar">
+                    <div class="home-indicator"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Description -->
+    <footer class="simulator-footer">
+        <p><strong>Pentecost University • Faculty of Science & Computing • Level 400</strong></p>
+        <p>Biometric Face Detection Mobile Simulator running Ultralytics YOLOv8 Edge Engine • Candidate: Philip Antwi</p>
+    </footer>
+
+    <script>
+        // Update Phone Clock every second
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('phoneClock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        const chassis = document.getElementById('phoneChassis');
+        const frame = document.getElementById('appFrame');
+
+        // Device Presets
+        function changeDevice() {
+            const val = document.getElementById('deviceSelect').value;
+            const [w, h] = val.split('x').map(Number);
+            chassis.classList.remove('landscape');
+            chassis.style.width = w + 'px';
+            chassis.style.height = h + 'px';
+        }
+
+        // Rotate Screen
+        let isLandscape = false;
+        function toggleOrientation() {
+            isLandscape = !isLandscape;
+            const val = document.getElementById('deviceSelect').value;
+            const [w, h] = val.split('x').map(Number);
+
+            if (isLandscape) {
+                chassis.classList.add('landscape');
+                chassis.style.width = Math.max(w, h) + 'px';
+                chassis.style.height = Math.min(w, h) + 'px';
+            } else {
+                chassis.classList.remove('landscape');
+                chassis.style.width = Math.min(w, h) + 'px';
+                chassis.style.height = Math.max(w, h) + 'px';
+            }
+        }
+
+        // Reload App
+        function reloadApp() {
+            frame.src = 'index.html?t=' + Date.now();
+        }
+    </script>
+</body>
+</html>
