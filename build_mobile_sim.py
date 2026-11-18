@@ -1,0 +1,338 @@
+# -*- coding: utf-8 -*-
+import os
+
+PROJECT_DIR = r"c:\Users\User\OneDrive\Desktop\MY IA FOR ARTIFICIAL INTELLIGENCE\Philip_Face_Recognition_Project"
+
+html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philip AI Biometric Engine // Mobile Smartphone Simulator</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #061017;
+            --surface: #0B1B26;
+            --surface-elevated: #102636;
+            --border: #163245;
+            --cyan: #06B6D4;
+            --cyan-bright: #22D3EE;
+            --teal: #2DD4BF;
+            --text: #F0FDFA;
+            --text-muted: #8AA4B6;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-sans);
+        }
+
+        body {
+            background: radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
+                        radial-gradient(circle at 85% 85%, rgba(45, 212, 191, 0.08) 0%, transparent 40%),
+                        #061017;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px 40px;
+            overflow-x: hidden;
+        }
+
+        /* Ambient scan grid backdrop */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+            background-size: 36px 36px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Top Desktop Toolbar */
+        .top-toolbar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 24px;
+            padding: 14px 22px;
+            background: rgba(11, 27, 38, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--cyan), var(--teal));
+            color: #061017;
+            font-weight: 800;
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-family: var(--font-mono);
+        }
+
+        .brand-text h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-text p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .controls-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-tool {
+            background: rgba(16, 38, 54, 0.8);
+            border: 1px solid var(--border);
+            color: #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-tool:hover {
+            border-color: var(--cyan);
+            color: var(--cyan-bright);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+        }
+
+        .btn-tool.primary {
+            background: linear-gradient(135deg, var(--cyan), var(--teal));
+            color: #061017;
+            border: none;
+            font-weight: 700;
+        }
+
+        .btn-tool.primary:hover {
+            opacity: 0.95;
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.4);
+        }
+
+        /* Simulator Stage */
+        .simulator-stage {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        /* Phone Frame */
+        .phone-frame {
+            position: relative;
+            width: 410px;
+            height: 840px;
+            background: #02070c;
+            border-radius: 52px;
+            padding: 12px;
+            box-shadow: 
+                0 0 0 4px #163245,
+                0 0 0 7px #0B1B26,
+                0 0 50px rgba(6, 182, 212, 0.2),
+                0 30px 80px rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        /* Dynamic Island */
+        .phone-island {
+            position: absolute;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 118px;
+            height: 28px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .island-camera {
+            width: 11px;
+            height: 11px;
+            background: #0a1017;
+            border: 2px solid #162430;
+            border-radius: 50%;
+        }
+
+        .island-sensor {
+            width: 7px;
+            height: 7px;
+            background: #0e202e;
+            border-radius: 50%;
+        }
+
+        /* Screen Area */
+        .phone-screen {
+            flex: 1;
+            width: 100%;
+            background: #061017;
+            border-radius: 42px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            background: #061017;
+        }
+
+        /* Bottom Home Bar Indicator */
+        .home-bar {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 4px;
+            z-index: 25;
+            pointer-events: none;
+        }
+
+        /* Mobile Meta Footer */
+        .mobile-footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            z-index: 10;
+        }
+
+        .mobile-footer a {
+            color: var(--cyan);
+            text-decoration: none;
+        }
+
+        .mobile-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Desktop Toolbar -->
+    <header class="top-toolbar">
+        <div class="brand-section">
+            <span class="brand-badge">MOBILE SIMULATOR</span>
+            <div class="brand-text">
+                <h2>Philip AI — Biometric Engine</h2>
+                <p>Ultralytics YOLOv8 // Target: Phillip (PUIT24120002)</p>
+            </div>
+        </div>
+        <div class="controls-section">
+            <button class="btn-tool" onclick="reloadScreen()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                Reload
+            </button>
+            <a class="btn-tool" href="Philip_Face_AI.apk" download>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Download APK
+            </a>
+            <a class="btn-tool primary" href="index.html" target="_blank">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+                </svg>
+                Open Full Web App
+            </a>
+        </div>
+    </header>
+
+    <!-- Smartphone Device Container -->
+    <div class="simulator-stage">
+        <div class="phone-frame">
+            <!-- Dynamic Island Notch -->
+            <div class="phone-island">
+                <div class="island-camera"></div>
+                <div class="island-sensor"></div>
+            </div>
+
+            <!-- Mobile Screen with Live App -->
+            <div class="phone-screen">
+                <iframe id="mobileIframe" class="screen-iframe" src="index.html" allow="camera; microphone"></iframe>
+            </div>
+
+            <!-- Home Swipe Bar -->
+            <div class="home-bar"></div>
+        </div>
+    </div>
+
+    <!-- Simulator Footer -->
+    <div class="mobile-footer">
+        Pentecost University &bull; Faculty of IT & Computing &bull; Philip Antwi (<a href="https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002" target="_blank">PUIT24120002</a>)
+    </div>
+
+    <script>
+        function reloadScreen() {
+            const iframe = document.getElementById('mobileIframe');
+            iframe.src = 'index.html?t=' + Date.now();
+        }
+    </script>
+</body>
+</html>
+"""
+
+output_path = os.path.join(PROJECT_DIR, "mobile_simulator.html")
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(html)
+
+print("Updated mobile_simulator.html with Bioluminescent Cyan & Deep Teal theme!")

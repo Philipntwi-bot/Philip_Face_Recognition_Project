@@ -3,49 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Face Search // Reversely Mobile Simulator</title>
+    <title>Philip AI Biometric Engine // Mobile Smartphone Simulator</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --reversely-bg: #070714;
-            --reversely-purple: #A54EFF;
-            --reversely-violet: #774DFF;
-            --reversely-cyan: #38BDF8;
-            --panel-bg: rgba(14, 13, 31, 0.88);
-            --border-glow: rgba(165, 78, 255, 0.35);
+            --bg: #061017;
+            --surface: #0B1B26;
+            --surface-elevated: #102636;
+            --border: #163245;
+            --cyan: #06B6D4;
+            --cyan-bright: #22D3EE;
+            --teal: #2DD4BF;
+            --text: #F0FDFA;
+            --text-muted: #8AA4B6;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-sans);
         }
 
         body {
-            background: radial-gradient(circle at 50% 0%, #1e1338 0%, #070714 100%);
-            color: #f8fafc;
+            background: radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
+                        radial-gradient(circle at 85% 85%, rgba(45, 212, 191, 0.08) 0%, transparent 40%),
+                        #061017;
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 24px 16px 40px;
+            padding: 20px 16px 40px;
             overflow-x: hidden;
         }
 
-        /* Ambient Glow */
-        .ambient-glow {
+        /* Ambient scan grid backdrop */
+        body::before {
+            content: "";
             position: fixed;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(165, 78, 255, 0.16) 0%, transparent 70%);
-            top: 15%;
-            z-index: 0;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+            background-size: 36px 36px;
             pointer-events: none;
-            filter: blur(80px);
+            z-index: 0;
         }
 
         /* Top Desktop Toolbar */
@@ -59,370 +67,259 @@
             gap: 16px;
             width: 100%;
             max-width: 1100px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            padding: 14px 24px;
             margin-bottom: 24px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
+            padding: 14px 22px;
+            background: rgba(11, 27, 38, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
         }
 
-        .brand-title {
+        .brand-section {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .brand-badge {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #B34EFF, #774DFF);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 0 20px rgba(165, 78, 255, 0.5);
+            background: linear-gradient(135deg, var(--cyan), var(--teal));
+            color: #061017;
+            font-weight: 800;
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-family: var(--font-mono);
         }
 
-        .brand-text h1 {
-            font-size: 16px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.2px;
+        .brand-text h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.01em;
         }
 
         .brand-text p {
-            font-size: 11px;
-            color: #C084FC;
-            font-weight: 600;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
         }
 
-        .toolbar-actions {
+        .controls-section {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
-        .tool-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: #f1f5f9;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 13px;
+        .btn-tool {
+            background: rgba(16, 38, 54, 0.8);
+            border: 1px solid var(--border);
+            color: #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: all 0.2s ease;
             text-decoration: none;
         }
 
-        .tool-btn:hover {
-            background: rgba(165, 78, 255, 0.2);
-            border-color: var(--reversely-purple);
-            color: #ffffff;
-            transform: translateY(-2px);
+        .btn-tool:hover {
+            border-color: var(--cyan);
+            color: var(--cyan-bright);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
         }
 
-        .tool-btn-primary {
-            background: linear-gradient(to right, #B34EFF, #774DFF);
-            border-color: #A54EFF;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(165, 78, 255, 0.4);
+        .btn-tool.primary {
+            background: linear-gradient(135deg, var(--cyan), var(--teal));
+            color: #061017;
+            border: none;
+            font-weight: 700;
         }
 
-        .tool-btn-primary:hover {
-            background: linear-gradient(to right, #C084FC, #8B5CF6);
-            box-shadow: 0 6px 20px rgba(165, 78, 255, 0.6);
-            color: #ffffff;
+        .btn-tool.primary:hover {
+            opacity: 0.95;
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.4);
         }
 
-        .device-selector {
-            background: #0e0d1f;
-            color: #f8fafc;
-            border: 1px solid rgba(165, 78, 255, 0.35);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;
-        }
-
-        /* Smartphone Hardware Chassis */
+        /* Simulator Stage */
         .simulator-stage {
             position: relative;
             z-index: 5;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            padding: 10px;
         }
 
-        .phone-chassis {
+        /* Phone Frame */
+        .phone-frame {
             position: relative;
-            width: 393px;
-            height: 820px;
-            background: #090817;
-            border-radius: 54px;
-            padding: 14px;
+            width: 410px;
+            height: 840px;
+            background: #02070c;
+            border-radius: 52px;
+            padding: 12px;
             box-shadow: 
-                0 0 0 4px #261b40,
-                0 0 0 7px #140d24,
-                0 25px 60px -15px rgba(0, 0, 0, 0.85),
-                0 0 50px rgba(165, 78, 255, 0.25);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                0 0 0 4px #163245,
+                0 0 0 7px #0B1B26,
+                0 0 50px rgba(6, 182, 212, 0.2),
+                0 30px 80px rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
         }
 
-        .phone-chassis.landscape {
-            width: 820px;
-            height: 393px;
-            border-radius: 44px;
-        }
-
-        .phone-screen {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: #070714;
-            border-radius: 42px;
-            overflow: hidden;
+        /* Dynamic Island */
+        .phone-island {
+            position: absolute;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 118px;
+            height: 28px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 30;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Status Bar */
-        .phone-status-bar {
-            height: 38px;
-            background: #070714;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #e2e8f0;
-            z-index: 20;
-            user-select: none;
-        }
-
-        .dynamic-island {
-            width: 110px;
-            height: 25px;
-            background: #000000;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-            box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.2);
-        }
-
-        .island-lens {
-            width: 10px;
-            height: 10px;
+        .island-camera {
+            width: 11px;
+            height: 11px;
+            background: #0a1017;
+            border: 2px solid #162430;
             border-radius: 50%;
-            background: #111827;
-            border: 1px solid #1f2937;
         }
 
-        .island-indicator {
-            width: 6px;
-            height: 6px;
+        .island-sensor {
+            width: 7px;
+            height: 7px;
+            background: #0e202e;
             border-radius: 50%;
-            background: #34D399;
-            box-shadow: 0 0 8px #34D399;
         }
 
-        .status-icons {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: #cbd5e1;
-        }
-
-        /* Iframe */
-        .app-iframe {
+        /* Screen Area */
+        .phone-screen {
             flex: 1;
+            width: 100%;
+            background: #061017;
+            border-radius: 42px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen-iframe {
             width: 100%;
             height: 100%;
             border: none;
-            background: #070714;
+            display: block;
+            background: #061017;
         }
 
-        .phone-home-bar {
-            height: 18px;
-            background: #070714;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-        }
-
-        .home-indicator {
-            width: 130px;
-            height: 4.5px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 10px;
-            transition: all 0.2s;
-        }
-
-        .phone-chassis:hover .home-indicator {
-            background: rgba(165, 78, 255, 0.85);
-            box-shadow: 0 0 10px rgba(165, 78, 255, 0.5);
-        }
-
-        .btn-side {
+        /* Bottom Home Bar Indicator */
+        .home-bar {
             position: absolute;
-            background: #1f1833;
-            border-radius: 3px;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 4px;
+            z-index: 25;
+            pointer-events: none;
         }
 
-        .btn-volume-up { left: -10px; top: 130px; width: 5px; height: 52px; }
-        .btn-volume-down { left: -10px; top: 195px; width: 5px; height: 52px; }
-        .btn-power { right: -10px; top: 160px; width: 5px; height: 75px; }
-
-        .simulator-footer {
+        /* Mobile Meta Footer */
+        .mobile-footer {
             margin-top: 24px;
             text-align: center;
-            color: #64748b;
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            z-index: 10;
         }
 
-        .simulator-footer strong { color: #94a3b8; }
+        .mobile-footer a {
+            color: var(--cyan);
+            text-decoration: none;
+        }
+
+        .mobile-footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-
-    <div class="ambient-glow"></div>
-
-    <!-- Desktop Toolbar -->
+    <!-- Top Desktop Toolbar -->
     <header class="top-toolbar">
-        <div class="brand-title">
-            <div class="brand-badge">🔍</div>
+        <div class="brand-section">
+            <span class="brand-badge">MOBILE SIMULATOR</span>
             <div class="brand-text">
-                <h1>REVERSELY AI // SMARTPHONE SIMULATOR</h1>
-                <p>ULTRALYTICS YOLOV8 NANO BIOMETRIC ENGINE (PUIT24120002)</p>
+                <h2>Philip AI — Biometric Engine</h2>
+                <p>Ultralytics YOLOv8 // Target: Phillip (PUIT24120002)</p>
             </div>
         </div>
-
-        <div class="toolbar-actions">
-            <select class="device-selector" id="deviceSelect" onchange="changeDevice()">
-                <option value="393x820">📱 iPhone 16 Pro (393 × 820)</option>
-                <option value="412x880">📱 Samsung Galaxy S25 (412 × 880)</option>
-                <option value="360x780">📱 Compact Android (360 × 780)</option>
-                <option value="768x960">📱 iPad / Tablet (768 × 960)</option>
-            </select>
-
-            <button class="tool-btn" onclick="toggleOrientation()">
-                🔄 Rotate
+        <div class="controls-section">
+            <button class="btn-tool" onclick="reloadScreen()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                Reload
             </button>
-
-            <button class="tool-btn" onclick="reloadApp()">
-                ⚡ Refresh
-            </button>
-
-            <a class="tool-btn tool-btn-primary" href="Philip_Face_AI.apk" download="Philip_Face_AI.apk">
-                ⬇️ Download APK (3.2 MB)
+            <a class="btn-tool" href="Philip_Face_AI.apk" download>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Download APK
             </a>
-
-            <a class="tool-btn" href="index.html" target="_blank">
-                🖥️ Full Desktop View
+            <a class="btn-tool primary" href="index.html" target="_blank">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+                </svg>
+                Open Full Web App
             </a>
         </div>
     </header>
 
-    <!-- Smartphone Chassis -->
-    <main class="simulator-stage">
-        <div class="phone-chassis" id="phoneChassis">
-            <div class="btn-side btn-volume-up"></div>
-            <div class="btn-side btn-volume-down"></div>
-            <div class="btn-side btn-power"></div>
-
-            <div class="phone-screen">
-                <div class="phone-status-bar">
-                    <span id="phoneClock">09:41</span>
-                    <div class="dynamic-island">
-                        <div class="island-lens"></div>
-                        <div class="island-indicator"></div>
-                    </div>
-                    <div class="status-icons">
-                        <span>5G</span>
-                        <span>📶</span>
-                        <span>100% 🔋</span>
-                    </div>
-                </div>
-
-                <iframe 
-                    id="appFrame" 
-                    class="app-iframe" 
-                    src="index.html"
-                    allow="camera; microphone; autoplay; encrypted-media; fullscreen"
-                ></iframe>
-
-                <div class="phone-home-bar">
-                    <div class="home-indicator"></div>
-                </div>
+    <!-- Smartphone Device Container -->
+    <div class="simulator-stage">
+        <div class="phone-frame">
+            <!-- Dynamic Island Notch -->
+            <div class="phone-island">
+                <div class="island-camera"></div>
+                <div class="island-sensor"></div>
             </div>
-        </div>
-    </main>
 
-    <footer class="simulator-footer">
-        <p><strong>Pentecost University • Faculty of Science & Computing • Level 400</strong></p>
-        <p>AI Face Recognition Search Interior based on Reversely.ai • Candidate: Philip Antwi (PUIT24120002)</p>
-    </footer>
+            <!-- Mobile Screen with Live App -->
+            <div class="phone-screen">
+                <iframe id="mobileIframe" class="screen-iframe" src="index.html" allow="camera; microphone"></iframe>
+            </div>
+
+            <!-- Home Swipe Bar -->
+            <div class="home-bar"></div>
+        </div>
+    </div>
+
+    <!-- Simulator Footer -->
+    <div class="mobile-footer">
+        Pentecost University &bull; Faculty of IT & Computing &bull; Philip Antwi (<a href="https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002" target="_blank">PUIT24120002</a>)
+    </div>
 
     <script>
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            hours = hours < 10 ? '0' + hours : hours;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            document.getElementById('phoneClock').textContent = `${hours}:${minutes}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        const chassis = document.getElementById('phoneChassis');
-        const frame = document.getElementById('appFrame');
-
-        function changeDevice() {
-            const val = document.getElementById('deviceSelect').value;
-            const [w, h] = val.split('x').map(Number);
-            chassis.classList.remove('landscape');
-            chassis.style.width = w + 'px';
-            chassis.style.height = h + 'px';
-        }
-
-        let isLandscape = false;
-        function toggleOrientation() {
-            isLandscape = !isLandscape;
-            const val = document.getElementById('deviceSelect').value;
-            const [w, h] = val.split('x').map(Number);
-
-            if (isLandscape) {
-                chassis.classList.add('landscape');
-                chassis.style.width = Math.max(w, h) + 'px';
-                chassis.style.height = Math.min(w, h) + 'px';
-            } else {
-                chassis.classList.remove('landscape');
-                chassis.style.width = Math.min(w, h) + 'px';
-                chassis.style.height = Math.max(w, h) + 'px';
-            }
-        }
-
-        function reloadApp() {
-            frame.src = 'index.html?t=' + Date.now();
+        function reloadScreen() {
+            const iframe = document.getElementById('mobileIframe');
+            iframe.src = 'index.html?t=' + Date.now();
         }
     </script>
 </body>
