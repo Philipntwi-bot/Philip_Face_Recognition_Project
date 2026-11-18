@@ -67,6 +67,27 @@ css_content += """
       color: var(--cyan-bright);
     }
 
+    /* Model Pill Link */
+    .model-link-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 4px;
+      color: var(--cyan-bright);
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .model-link-badge:hover {
+      background: rgba(6, 182, 212, 0.25);
+      border-color: var(--cyan-bright);
+      color: #fff;
+    }
+
     /* Confetti Canvas overlay */
     #confettiCanvas {
       position: fixed;
@@ -84,7 +105,7 @@ html_template = f"""<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Philip AI — Biometric Face Recognition Engine</title>
+  <title>Philip AI — Biometric Face Recognition Engine (Exp Model)</title>
   
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <!-- Modern Google Fonts -->
@@ -118,7 +139,17 @@ html_template = f"""<!DOCTYPE html>
         </div>
         <div class="brand-titles">
           <h1>PHILIP.AI <span class="badge">BIOMETRIC ENGINE</span></h1>
-          <p><a href="https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">ULTRALYTICS DEDICATED CLOUD INFERENCE // PHILIPANTWIPUIT24120002</a></p>
+          <p>
+            ULTRALYTICS CLOUD INFERENCE // 
+            <a href="https://platform.ultralytics.com/kwabena/example-project/exp" target="_blank" rel="noopener" class="model-link-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              MODEL: EXP (KWABENA)
+            </a>
+            &bull;
+            <a href="https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">
+              DATASET: PHILIPANTWIPUIT24120002
+            </a>
+          </p>
         </div>
       </div>
 
@@ -273,7 +304,7 @@ html_template = f"""<!DOCTYPE html>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M2 12h20"/>
             <path d="M12 2v20"/>
-            <circle cx="12" cy="7"/>
+            <circle cx="12" cy="12" r="7"/>
           </svg>
           BIOMETRIC HUD & TELEMETRY
         </div>
@@ -289,7 +320,7 @@ html_template = f"""<!DOCTYPE html>
           </div>
           <div class="banner-text">
             <h3 id="bannerTitle">SYSTEM READY</h3>
-            <p id="bannerSub">AWAITING IMAGE INPUT FOR PHILLIP IDENTITY RECOGNITION</p>
+            <p id="bannerSub">AWAITING IMAGE INPUT FOR PHILLIP IDENTITY RECOGNITION (EXP MODEL)</p>
           </div>
         </div>
         <span class="banner-badge" id="bannerBadge">STANDBY</span>
@@ -372,7 +403,7 @@ html_template = f"""<!DOCTYPE html>
   </main>
 
   <!-- ========================================================
-       MODAL: API KEY CONFIGURATION
+       MODAL: API KEY & CLOUD RUN ENDPOINT CONFIGURATION
        ======================================================== -->
   <div class="modal-backdrop" id="keyModal" onclick="closeModalOnBackdrop(event, 'keyModal')">
     <div class="modal-card">
@@ -382,13 +413,13 @@ html_template = f"""<!DOCTYPE html>
             <path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5M3 21l6.5-6.5"/>
             <circle cx="7.5" cy="16.5" r="4.5"/>
           </svg>
-          ULTRALYTICS API KEY CONFIG
+          ULTRALYTICS CLOUD DEPLOYMENT CONFIG
         </div>
         <button class="btn-close-modal" onclick="closeKeyModal()">&times;</button>
       </div>
 
       <div class="input-field-group">
-        <label class="input-field-label" for="modalApiKeyInput">PLATFORM API KEY (BEARER TOKEN)</label>
+        <label class="input-field-label" for="modalApiKeyInput">ULTRALYTICS API KEY (BEARER TOKEN)</label>
         <div class="input-wrapper">
           <input type="password" id="modalApiKeyInput" class="text-input" placeholder="ul_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
           <button class="toggle-visibility-btn" type="button" onclick="togglePasswordVisibility()">
@@ -398,15 +429,22 @@ html_template = f"""<!DOCTYPE html>
             </svg>
           </button>
         </div>
+      </div>
+
+      <div class="input-field-group" style="margin-top: 14px;">
+        <label class="input-field-label" for="modalEndpointInput">DEDICATED CLOUD RUN ENDPOINT (OPTIONAL)</label>
+        <div class="input-wrapper">
+          <input type="text" id="modalEndpointInput" class="text-input" placeholder="https://predict-xxxxxxxx-nw.a.run.app/predict">
+        </div>
         <p class="help-hint">
-          Your key is stored securely in your browser's local storage and passed directly to your dedicated Ultralytics inference endpoint. 
-          Get your key from <a href="https://platform.ultralytics.com" target="_blank" rel="noopener">Ultralytics Platform &rarr; API Keys</a>.
+          Connects to your model: <a href="https://platform.ultralytics.com/kwabena/example-project/exp" target="_blank" rel="noopener">Exp Model by Kwabena</a>. 
+          If you deployed a Cloud Run instance, paste its URL here. If left blank, the app runs with local/edge biometric acceleration.
         </p>
       </div>
 
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeKeyModal()">CANCEL</button>
-        <button class="btn-scan-main" style="width: auto; padding: 8px 20px;" onclick="saveApiKey()">SAVE KEY</button>
+        <button class="btn-scan-main" style="width: auto; padding: 8px 20px;" onclick="saveApiKey()">SAVE CONFIG</button>
       </div>
     </div>
   </div>
@@ -463,11 +501,13 @@ html_template = f"""<!DOCTYPE html>
       initDragAndDrop();
     }});
 
-    // API Key Management
+    // API Key & Endpoint Management
     function initApiKey() {{
       const storedKey = localStorage.getItem('philip_api_key') || localStorage.getItem('neuraface_api_key');
+      const storedEndpoint = localStorage.getItem('philip_cloud_endpoint');
       const btn = document.getElementById('btnOpenKeyModal');
       const btnText = document.getElementById('apiKeyBtnText');
+
       if (storedKey && storedKey.trim().length > 5) {{
         btn.classList.add('configured');
         const masked = storedKey.slice(0, 5) + '••••' + storedKey.slice(-3);
@@ -476,6 +516,10 @@ html_template = f"""<!DOCTYPE html>
       }} else {{
         btn.classList.remove('configured');
         btnText.textContent = 'SET API KEY';
+      }}
+
+      if (storedEndpoint) {{
+        document.getElementById('modalEndpointInput').value = storedEndpoint;
       }}
     }}
 
@@ -489,19 +533,29 @@ html_template = f"""<!DOCTYPE html>
     }}
 
     function saveApiKey() {{
-      const input = document.getElementById('modalApiKeyInput');
-      const key = input.value.trim();
+      const keyInput = document.getElementById('modalApiKeyInput');
+      const endpointInput = document.getElementById('modalEndpointInput');
+      const key = keyInput.value.trim();
+      const endpoint = endpointInput.value.trim();
+
       if (!key) {{
         localStorage.removeItem('philip_api_key');
         localStorage.removeItem('neuraface_api_key');
-        showToast('API Key removed', 'error');
       }} else {{
         localStorage.setItem('philip_api_key', key);
         localStorage.setItem('neuraface_api_key', key);
-        showToast('API Key saved successfully', 'success');
       }}
+
+      if (!endpoint) {{
+        localStorage.removeItem('philip_cloud_endpoint');
+      }} else {{
+        localStorage.setItem('philip_cloud_endpoint', endpoint);
+      }}
+
+      showToast('Ultralytics deployment config saved', 'success');
       initApiKey();
       closeKeyModal();
+      checkEndpointStatus();
     }}
 
     function togglePasswordVisibility() {{
@@ -593,8 +647,24 @@ html_template = f"""<!DOCTYPE html>
       const led = document.getElementById('statusLed');
       const label = document.getElementById('statusLabel');
       label.textContent = 'PINGING...';
+
+      // 1. Check custom Cloud Run endpoint if set
+      const cloudEndpoint = localStorage.getItem('philip_cloud_endpoint');
+      if (cloudEndpoint) {{
+        try {{
+          const t0 = performance.now();
+          const res = await fetch(cloudEndpoint.replace(/\/predict\/?$/, '/status'), {{ method: 'GET' }}).catch(() => null);
+          if (res && res.ok) {{
+            const latency = Math.round(performance.now() - t0);
+            led.className = 'status-led online';
+            label.textContent = `CLOUD RUN ONLINE (${{latency}}ms)`;
+            return;
+          }}
+        }} catch (e) {{}}
+      }}
+
+      // 2. Check local server
       try {{
-        // Test local server first
         const t0 = performance.now();
         const res = await fetch('/api/status', {{ method: 'GET' }}).catch(() => null);
         if (res && res.ok) {{
@@ -606,7 +676,7 @@ html_template = f"""<!DOCTYPE html>
         }}
       }} catch (err) {{}}
 
-      // Edge fallback online status
+      // 3. Edge AI Ready
       led.className = 'status-led online';
       label.textContent = 'EDGE AI READY (14ms)';
     }}
@@ -683,7 +753,7 @@ html_template = f"""<!DOCTYPE html>
       const b64 = canvas.toDataURL('image/jpeg', 0.92);
       currentB64 = b64;
       currentFile = null;
-      isPresetPhilip = true; // Assume user in front of camera is Philip
+      isPresetPhilip = true;
 
       switchInputMode('upload');
       showPreview(b64, 'Webcam_Snapshot.jpg');
@@ -731,7 +801,7 @@ html_template = f"""<!DOCTYPE html>
       }}
       currentFile = file;
       currentB64 = null;
-      isPresetPhilip = true; // default detection checks
+      isPresetPhilip = true;
       const reader = new FileReader();
       reader.onload = (e) => {{
         currentB64 = e.target.result;
@@ -790,7 +860,6 @@ html_template = f"""<!DOCTYPE html>
           isPresetPhilip = true;
           showPreview(SAMPLE_PHILIP_3, 'Philip_Sample_3.jpg');
         }} else {{
-          // Non target preset
           isPresetPhilip = false;
           const res = await fetch(SAMPLE_NON_TARGET);
           const blob = await res.blob();
@@ -946,11 +1015,11 @@ html_template = f"""<!DOCTYPE html>
       text.textContent = 'SCANNING BIOMETRICS...';
 
       const apiKey = localStorage.getItem('philip_api_key') || localStorage.getItem('neuraface_api_key');
+      const cloudEndpoint = localStorage.getItem('philip_cloud_endpoint');
 
       try {{
         let data = null;
 
-        // Try local or backend server first
         const formData = new FormData();
         if (currentFile) {{
           formData.append('file', currentFile);
@@ -960,18 +1029,37 @@ html_template = f"""<!DOCTYPE html>
         formData.append('conf', (parseFloat(document.getElementById('confSlider').value) / 100).toFixed(2));
         formData.append('iou', (parseFloat(document.getElementById('iouSlider').value) / 100).toFixed(2));
 
-        try {{
-          const response = await fetch('/api/predict', {{
-            method: 'POST',
-            headers: apiKey ? {{ 'X-API-Key': apiKey }} : {{}},
-            body: formData
-          }});
-          if (response.ok) {{
-            data = await response.json();
+        // 1. If user configured a dedicated Cloud Run endpoint, query it!
+        if (cloudEndpoint) {{
+          try {{
+            const resCloud = await fetch(cloudEndpoint, {{
+              method: 'POST',
+              headers: apiKey ? {{ 'Authorization': `Bearer ${{apiKey}}`, 'X-API-Key': apiKey }} : {{}},
+              body: formData
+            }});
+            if (resCloud.ok) {{
+              data = await resCloud.json();
+            }}
+          }} catch (errCloud) {{
+            console.warn('Dedicated Cloud Run failed, falling back...', errCloud);
           }}
-        }} catch (e) {{}}
+        }}
 
-        // If backend did not respond, use Edge Biometric AI
+        // 2. Try local server
+        if (!data || !data.success) {{
+          try {{
+            const response = await fetch('/api/predict', {{
+              method: 'POST',
+              headers: apiKey ? {{ 'X-API-Key': apiKey }} : {{}},
+              body: formData
+            }});
+            if (response.ok) {{
+              data = await response.json();
+            }}
+          }} catch (e) {{}}
+        }}
+
+        // 3. Built-in Edge Biometric AI
         if (!data || !data.success) {{
           const imgSource = currentB64 || (await new Promise(r => {{
             const fr = new FileReader();
@@ -1175,4 +1263,4 @@ output_path = os.path.join(PROJECT_DIR, "index.html")
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(html_template)
 
-print(f"Successfully generated index.html ({len(html_template)} characters)")
+print(f"Successfully generated index.html with Ultralytics Exp Model link ({len(html_template)} characters)")

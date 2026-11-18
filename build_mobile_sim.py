@@ -112,6 +112,15 @@ html = """<!DOCTYPE html>
             font-family: var(--font-mono);
         }
 
+        .brand-text a {
+            color: var(--cyan-bright);
+            text-decoration: none;
+        }
+
+        .brand-text a:hover {
+            text-decoration: underline;
+        }
+
         .controls-section {
             display: flex;
             align-items: center;
@@ -272,7 +281,10 @@ html = """<!DOCTYPE html>
             <span class="brand-badge">MOBILE SIMULATOR</span>
             <div class="brand-text">
                 <h2>Philip AI — Biometric Engine</h2>
-                <p>Ultralytics YOLOv8 // Target: Phillip (PUIT24120002)</p>
+                <p>
+                    <a href="https://platform.ultralytics.com/kwabena/example-project/exp" target="_blank">Model: Exp (Kwabena)</a> &bull; 
+                    <a href="https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002" target="_blank">Dataset: philipantwipuit24120002</a>
+                </p>
             </div>
         </div>
         <div class="controls-section">
@@ -335,4 +347,4 @@ output_path = os.path.join(PROJECT_DIR, "mobile_simulator.html")
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(html)
 
-print("Updated mobile_simulator.html with Bioluminescent Cyan & Deep Teal theme!")
+print("Updated mobile_simulator.html successfully!")
