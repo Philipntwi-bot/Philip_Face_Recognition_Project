@@ -276,6 +276,14 @@ html_template = f"""<!DOCTYPE html>
       </div>
 
       <div class="nav-controls">
+        <!-- Direct Clickable GitHub Repository Button -->
+        <a href="https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project" target="_blank" rel="noopener" class="btn-api-key" style="text-decoration: none; display: inline-flex; align-items: center; gap: 7px; background: rgba(16, 38, 54, 0.85); border-color: rgba(6, 182, 212, 0.4); color: #F0FDFA;" title="Open Official GitHub Repository (Philipntwi-bot)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>GITHUB REPO</span>
+        </a>
+
         <button class="btn-api-key" style="background: rgba(45, 212, 191, 0.12); border-color: rgba(45, 212, 191, 0.35); color: var(--teal);" onclick="openGraphsModal()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -519,6 +527,12 @@ html_template = f"""<!DOCTYPE html>
 
       <!-- Actions Bottom Bar -->
       <div class="actions-bar">
+        <a href="https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project" target="_blank" rel="noopener" class="btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border-color: rgba(6, 182, 212, 0.4); color: var(--cyan-bright);" title="Visit GitHub Repository (Philipntwi-bot)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GITHUB REPO
+        </a>
         <button class="btn-secondary" id="btnDownload" onclick="downloadAnnotatedImage()" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -543,6 +557,19 @@ html_template = f"""<!DOCTYPE html>
       </div>
     </div>
   </main>
+  <!-- Page Footer with Clickable Links -->
+  <footer style="margin-top: auto; padding: 22px 16px; text-align: center; border-top: 1px solid var(--border-subtle); background: rgba(6, 16, 23, 0.7); backdrop-filter: blur(8px); font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; z-index: 10; position: relative;">
+    <span>Pentecost University &bull; Faculty of IT & Computing</span>
+    <span style="color: var(--border);">&bull;</span>
+    <span>Philip Antwi (<a href="https://platform.ultralytics.com/kwabena/datasets/philipantwipuit24120002" target="_blank" style="color: var(--cyan); text-decoration: none;">PUIT24120002</a>)</span>
+    <span style="color: var(--border);">&bull;</span>
+    <a href="https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project" target="_blank" rel="noopener" style="color: var(--cyan-bright); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; background: rgba(6, 182, 212, 0.12); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(6, 182, 212, 0.3);">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub Repository (Click to View)
+    </a>
+    <span style="color: var(--border);">&bull;</span>
+    <a href="https://platform.ultralytics.com/kwabena/example-project/exp" target="_blank" rel="noopener" style="color: var(--teal); text-decoration: none;">Exp Model (Ultralytics Hub)</a>
+  </footer>
 
   <!-- ========================================================
        MODAL 1: SMART API KEY & CLOUD MODEL PARSER
