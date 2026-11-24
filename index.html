@@ -1515,6 +1515,15 @@
           <span>GITHUB REPO</span>
         </a>
 
+        <!-- High-Visibility Mobile App Download Button -->
+        <button class="btn-api-key" id="btnOpenMobileModal" onclick="openMobileModal()" style="text-decoration: none; display: inline-flex; align-items: center; gap: 7px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(6, 182, 212, 0.22)); border: 1px solid #10B981; color: #6EE7B7; font-weight: 700; box-shadow: 0 0 16px rgba(16, 185, 129, 0.35); cursor: pointer;" title="Download Native Android APK & Open Mobile App on Phone">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          <span>📲 DOWNLOAD MOBILE APP (APK)</span>
+        </button>
+
         <button class="btn-api-key" style="background: rgba(45, 212, 191, 0.12); border-color: rgba(45, 212, 191, 0.35); color: var(--teal);" onclick="openGraphsModal()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -1663,6 +1672,29 @@
           <button class="preset-btn" onclick="loadSamplePreset('non_target', 'Sample Non-Target')">Non-Target Test</button>
         </div>
       </div>
+
+      <!-- Quick Mobile App Card in Left Panel -->
+      <div style="margin-top: 18px; padding: 14px; background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(16, 185, 129, 0.08)); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-size: 0.76rem; font-family: var(--font-mono); color: #6EE7B7; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            MOBILE PHONE APP (APK)
+          </span>
+          <span style="font-size: 0.68rem; padding: 2px 6px; background: rgba(16, 185, 129, 0.2); color: #A7F3D0; border-radius: 4px; font-family: var(--font-mono);">v1.0.0 READY</span>
+        </div>
+        <p style="font-size: 0.73rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px;">
+          Run live biometric face inference natively on your Android mobile device camera.
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" onclick="openMobileModal()" class="preset-btn" style="flex: 1; border-color: #10B981; color: #6EE7B7; font-weight: 700; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            INSTALL ON PHONE
+          </button>
+          <a href="Philip_Face_AI.apk" download="Philip_Face_AI.apk" class="preset-btn" style="text-decoration: none; padding: 6px 12px; border-color: rgba(6, 182, 212, 0.4); color: var(--cyan-bright); display: flex; align-items: center; justify-content: center;" title="Direct 1-Click File Download">
+            ⬇ APK 3.7M
+          </a>
+        </div>
+      </div>
     </div>
 
     <!-- RIGHT PANEL: BIOMETRIC HUD, INSPECTION & TELEMETRY -->
@@ -1785,6 +1817,13 @@
           </svg>
           EVALUATION GRAPHS
         </button>
+        <button class="btn-secondary" onclick="openMobileModal()" style="border-color: rgba(16, 185, 129, 0.5); color: #6EE7B7; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;" title="Download Android Mobile APK & Install on Phone">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          DOWNLOAD MOBILE APP (APK)
+        </button>
       </div>
     </div>
   </main>
@@ -1800,6 +1839,10 @@
     </a>
     <span style="color: var(--border);">&bull;</span>
     <a href="https://platform.ultralytics.com/kwabena/example-project/exp" target="_blank" rel="noopener" style="color: var(--teal); text-decoration: none;">Exp Model (Ultralytics Hub)</a>
+    <span style="color: var(--border);">&bull;</span>
+    <a href="Philip_Face_AI.apk" download="Philip_Face_AI.apk" style="color: #6EE7B7; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.4);" title="Direct APK Download">
+      📲 Download Mobile App (APK 3.7MB)
+    </a>
   </footer>
 
   <!-- ========================================================
@@ -1894,6 +1937,91 @@
       <div class="modal-actions" style="margin-top: 14px;">
         <button class="btn-secondary" onclick="downloadCurrentGraph()">DOWNLOAD GRAPH (PNG)</button>
         <button class="btn-scan-main" style="width: auto; padding: 8px 20px;" onclick="closeGraphsModal()">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: MOBILE PHONE APP (APK DOWNLOAD & INSTALLATION)
+       ======================================================== -->
+  <div class="modal-backdrop" id="mobileModal" onclick="closeModalOnBackdrop(event, 'mobileModal')">
+    <div class="modal-card" style="max-width: 780px; width: 95%;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          <div>
+            <span style="color: #6EE7B7; font-size: 1.05rem; font-weight: 700;">INSTALL PHILIP FACE AI ON MOBILE PHONE</span>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
+              Official Android APK Release &bull; Package: <code>org.pentecost.philip.faceai</code> &bull; Signature Schemes v1/v2/v3 Verified
+            </div>
+          </div>
+        </div>
+        <button class="btn-close-modal" onclick="closeMobileModal()" title="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 20px 24px;">
+        <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center;">
+          <!-- Left: QR Code to Scan on Phone -->
+          <div style="text-align: center; background: rgba(15, 23, 42, 0.85); padding: 16px; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.35); box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);">
+            <div style="background: #ffffff; padding: 10px; border-radius: 8px; display: inline-block;">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAiYAAAImCAIAAADorNYRAAAOAklEQVR4nO3dy47jQJIAwdag//+Xtdc5cRvISc9IyuxeelCUHCwggp/v9/sHAPb7T/AcACA5AHRc5QAQkRwAIpIDQERyAIhIDgARyQEgIjkARCQHgIjkABCRHAAikgNARHIAiEgOABHJASAiOQBEJAeAiOQAEJEcACKSA0BEcgCISA4AEckBICI5AEQkB4CI5AAQkRwAIpIDQOTvvof+fD5/3uX7/W56vzc+8srz7rPvWO173lP2fUbPR2PfcT71yDd++qfODVc5AEQkB4CI5AAQkRwAIpIDQERyAIhIDgARyQEgIjkA3L99YOZ0+vtm11fmom/cEbDvaJz69G88J288209532/dClc5AEQkB4CI5AAQkRwAIpIDQERyAIhIDgARyQEgIjkAvH37wMzp9Pe95lNT4jNnyE99+vued9/uiX2f0cyjccrnwrN9hascACKSA0BEcgCISA4AEckBICI5AEQkB4CI5AAQkRwAfnv7wI1OzfmvTJjP/Nt9bny/79uYMHPefuas/vu4ygEgIjkARCQHgIjkABCRHAAikgNARHIAiEgOABHJASBi+8AFM9U3zuo/2zfnv2LfDohnpzYXPD/yjZ/CM/sFJnCVA0BEcgCISA4AEckBICI5AEQkB4CI5AAQkRwAIpIDwG9vH7hxTvjUDPmN72jleZ/NPM4rc/4z7TvO+z79mb8q35Gvah9XOQBEJAeAiOQAEJEcACKSA0BEcgCISA4AEckBICI5ALx9+8CNE9f7Jp9XjsbMieuZ73fmcV55zTf+7czzed/zvu+3boWrHAAikgNARHIAiEgOABHJASAiOQBEJAeAiOQAEJEcAO7fPvBr9/RecWqmep998+f7/vbZzLn3902279vjMPNvf42rHAAikgNARHIAiEgOABHJASAiOQBEJAeAiOQAEJEcACKfX5ubXZnWPnWsTt0N/tSRdBf6Cd63EWPFvjP2c+HfrnCVA0BEcgCISA4AEckBICI5AEQkB4CI5AAQkRwAJAeAd/n750I33t9+3zu6cQJ5ppVjtfLIK069qhufd8X7vqHfQ99u/1gDICI5AEQkB4CI5AAQkRwAIpIDQERyAIhIDgARyQEg8pk5F/2+CfP3TWufuiv7in1H8tQM+Y2v6saz/dd8t3XB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" alt="QR Code to Download Philip Face AI APK" style="width: 175px; height: 175px; display: block;" />
+            </div>
+            <div style="margin-top: 10px; font-family: var(--font-mono); font-size: 0.74rem; color: #A7F3D0; font-weight: 700;">
+              SCAN WITH PHONE CAMERA
+            </div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">
+              Direct Android APK Download (3.7 MB)
+            </div>
+          </div>
+
+          <!-- Right: Direct Download Buttons & Instructions -->
+          <div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Direct 1-Click APK Download Button -->
+              <a href="Philip_Face_AI.apk" download="Philip_Face_AI.apk" class="btn-scan-main" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; background: linear-gradient(135deg, #059669, #0D9488); border: 1px solid #34D399; color: #FFFFFF; font-weight: 700; font-size: 0.95rem; border-radius: 8px; box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4); text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>DOWNLOAD APK FOR ANDROID (3.7 MB)</span>
+              </a>
+
+              <!-- Secondary GitHub Raw Mirror -->
+              <a href="https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project/raw/main/Philip_Face_AI.apk" target="_blank" rel="noopener" class="btn-secondary" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; border-color: rgba(6, 182, 212, 0.4); color: var(--cyan-bright); padding: 10px; font-size: 0.82rem;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>GitHub Raw Direct APK Mirror</span>
+              </a>
+            </div>
+
+            <!-- Installation Instructions -->
+            <div style="margin-top: 14px; background: rgba(16, 38, 54, 0.7); border: 1px solid rgba(6, 182, 212, 0.25); border-radius: 8px; padding: 12px 14px;">
+              <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--cyan-bright); font-weight: 700; margin-bottom: 6px;">
+                ⚡ 3-STEP EASY PHONE INSTALLATION:
+              </div>
+              <ol style="margin: 0; padding-left: 18px; font-size: 0.75rem; color: var(--text-normal); line-height: 1.55;">
+                <li><strong>Download</strong>: Scan the QR code or tap the green Download button above directly on your mobile device.</li>
+                <li><strong>Install</strong>: Open <code>Philip_Face_AI.apk</code> from your downloads. When Android prompts <em>"Install unknown apps"</em>, tap <strong>Settings &rarr; Allow from this source</strong>, then tap <strong>Install</strong>.</li>
+                <li><strong>Launch & Recognize</strong>: Open <strong>Philip Face AI</strong>, grant Camera permission, and enjoy real-time biometric face detection!</li>
+              </ol>
+            </div>
+
+            <!-- iOS Support note -->
+            <div style="margin-top: 10px; font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span><strong>Using iPhone / iOS?</strong> Open this web app in Safari &rarr; Tap <strong>Share</strong> &rarr; <strong>"Add to Home Screen"</strong> for a native standalone app!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Meta & Attribution Bar -->
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">
+          <span>Pentecost University &bull; Philip Antwi (PUIT24120002)</span>
+          <span>Ultralytics Model: <code>Exp Model (Kwabena)</code></span>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="border-top: 1px solid var(--border-subtle); padding: 12px 24px; background: rgba(6, 16, 23, 0.4); display: flex; justify-content: flex-end;">
+        <button class="btn-modal-cancel" onclick="closeMobileModal()">CLOSE</button>
       </div>
     </div>
   </div>
@@ -2123,6 +2251,14 @@
     // ========================================================
     // GRAPHS MODAL CONTROLS
     // ========================================================
+    function openMobileModal() {
+      document.getElementById('mobileModal').classList.add('show');
+    }
+
+    function closeMobileModal() {
+      document.getElementById('mobileModal').classList.remove('show');
+    }
+
     function openGraphsModal() {
       document.getElementById('graphsModal').classList.add('show');
     }

@@ -42,6 +42,17 @@ b64_latency = get_base64_fig("inference_latency_graph.png")
 b64_cm = get_base64_fig("confusion_matrix.png")
 b64_labels = get_base64_fig("dataset_labels.jpg")
 
+def get_base64_file(filename, mime="image/png"):
+    filepath = os.path.join(PROJECT_DIR, filename)
+    if not os.path.exists(filepath):
+        return ""
+    with open(filepath, "rb") as f:
+        return f"data:{mime};base64," + base64.b64encode(f.read()).decode("utf-8")
+
+b64_qr_apk = get_base64_file("qrcode_apk_download.png", "image/png")
+b64_qr_web = get_base64_file("qrcode_mobile_app.png", "image/png")
+print(f"Encoded QR codes successfully: APK QR ({len(b64_qr_apk)} chars)")
+
 print("Encoded all images and figures successfully!")
 
 # Read CSS from vercel_style.css
@@ -284,6 +295,15 @@ html_template = f"""<!DOCTYPE html>
           <span>GITHUB REPO</span>
         </a>
 
+        <!-- High-Visibility Mobile App Download Button -->
+        <button class="btn-api-key" id="btnOpenMobileModal" onclick="openMobileModal()" style="text-decoration: none; display: inline-flex; align-items: center; gap: 7px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(6, 182, 212, 0.22)); border: 1px solid #10B981; color: #6EE7B7; font-weight: 700; box-shadow: 0 0 16px rgba(16, 185, 129, 0.35); cursor: pointer;" title="Download Native Android APK & Open Mobile App on Phone">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          <span>📲 DOWNLOAD MOBILE APP (APK)</span>
+        </button>
+
         <button class="btn-api-key" style="background: rgba(45, 212, 191, 0.12); border-color: rgba(45, 212, 191, 0.35); color: var(--teal);" onclick="openGraphsModal()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -432,6 +452,29 @@ html_template = f"""<!DOCTYPE html>
           <button class="preset-btn" onclick="loadSamplePreset('non_target', 'Sample Non-Target')">Non-Target Test</button>
         </div>
       </div>
+
+      <!-- Quick Mobile App Card in Left Panel -->
+      <div style="margin-top: 18px; padding: 14px; background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(16, 185, 129, 0.08)); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-size: 0.76rem; font-family: var(--font-mono); color: #6EE7B7; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            MOBILE PHONE APP (APK)
+          </span>
+          <span style="font-size: 0.68rem; padding: 2px 6px; background: rgba(16, 185, 129, 0.2); color: #A7F3D0; border-radius: 4px; font-family: var(--font-mono);">v1.0.0 READY</span>
+        </div>
+        <p style="font-size: 0.73rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px;">
+          Run live biometric face inference natively on your Android mobile device camera.
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" onclick="openMobileModal()" class="preset-btn" style="flex: 1; border-color: #10B981; color: #6EE7B7; font-weight: 700; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            INSTALL ON PHONE
+          </button>
+          <a href="Philip_Face_AI.apk" download="Philip_Face_AI.apk" class="preset-btn" style="text-decoration: none; padding: 6px 12px; border-color: rgba(6, 182, 212, 0.4); color: var(--cyan-bright); display: flex; align-items: center; justify-content: center;" title="Direct 1-Click File Download">
+            ⬇ APK 3.7M
+          </a>
+        </div>
+      </div>
     </div>
 
     <!-- RIGHT PANEL: BIOMETRIC HUD, INSPECTION & TELEMETRY -->
@@ -554,6 +597,13 @@ html_template = f"""<!DOCTYPE html>
           </svg>
           EVALUATION GRAPHS
         </button>
+        <button class="btn-secondary" onclick="openMobileModal()" style="border-color: rgba(16, 185, 129, 0.5); color: #6EE7B7; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;" title="Download Android Mobile APK & Install on Phone">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          DOWNLOAD MOBILE APP (APK)
+        </button>
       </div>
     </div>
   </main>
@@ -569,6 +619,10 @@ html_template = f"""<!DOCTYPE html>
     </a>
     <span style="color: var(--border);">&bull;</span>
     <a href="https://platform.ultralytics.com/kwabena/example-project/exp" target="_blank" rel="noopener" style="color: var(--teal); text-decoration: none;">Exp Model (Ultralytics Hub)</a>
+    <span style="color: var(--border);">&bull;</span>
+    <a href="Philip_Face_AI.apk" download="Philip_Face_AI.apk" style="color: #6EE7B7; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.4);" title="Direct APK Download">
+      📲 Download Mobile App (APK 3.7MB)
+    </a>
   </footer>
 
   <!-- ========================================================
@@ -663,6 +717,91 @@ html_template = f"""<!DOCTYPE html>
       <div class="modal-actions" style="margin-top: 14px;">
         <button class="btn-secondary" onclick="downloadCurrentGraph()">DOWNLOAD GRAPH (PNG)</button>
         <button class="btn-scan-main" style="width: auto; padding: 8px 20px;" onclick="closeGraphsModal()">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: MOBILE PHONE APP (APK DOWNLOAD & INSTALLATION)
+       ======================================================== -->
+  <div class="modal-backdrop" id="mobileModal" onclick="closeModalOnBackdrop(event, 'mobileModal')">
+    <div class="modal-card" style="max-width: 780px; width: 95%;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          <div>
+            <span style="color: #6EE7B7; font-size: 1.05rem; font-weight: 700;">INSTALL PHILIP FACE AI ON MOBILE PHONE</span>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
+              Official Android APK Release &bull; Package: <code>org.pentecost.philip.faceai</code> &bull; Signature Schemes v1/v2/v3 Verified
+            </div>
+          </div>
+        </div>
+        <button class="btn-close-modal" onclick="closeMobileModal()" title="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 20px 24px;">
+        <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center;">
+          <!-- Left: QR Code to Scan on Phone -->
+          <div style="text-align: center; background: rgba(15, 23, 42, 0.85); padding: 16px; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.35); box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);">
+            <div style="background: #ffffff; padding: 10px; border-radius: 8px; display: inline-block;">
+              <img src="{b64_qr_apk}" alt="QR Code to Download Philip Face AI APK" style="width: 175px; height: 175px; display: block;" />
+            </div>
+            <div style="margin-top: 10px; font-family: var(--font-mono); font-size: 0.74rem; color: #A7F3D0; font-weight: 700;">
+              SCAN WITH PHONE CAMERA
+            </div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">
+              Direct Android APK Download (3.7 MB)
+            </div>
+          </div>
+
+          <!-- Right: Direct Download Buttons & Instructions -->
+          <div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Direct 1-Click APK Download Button -->
+              <a href="Philip_Face_AI.apk" download="Philip_Face_AI.apk" class="btn-scan-main" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; background: linear-gradient(135deg, #059669, #0D9488); border: 1px solid #34D399; color: #FFFFFF; font-weight: 700; font-size: 0.95rem; border-radius: 8px; box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4); text-align: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>DOWNLOAD APK FOR ANDROID (3.7 MB)</span>
+              </a>
+
+              <!-- Secondary GitHub Raw Mirror -->
+              <a href="https://github.com/Philipntwi-bot/Philip_Face_Recognition_Project/raw/main/Philip_Face_AI.apk" target="_blank" rel="noopener" class="btn-secondary" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; border-color: rgba(6, 182, 212, 0.4); color: var(--cyan-bright); padding: 10px; font-size: 0.82rem;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>GitHub Raw Direct APK Mirror</span>
+              </a>
+            </div>
+
+            <!-- Installation Instructions -->
+            <div style="margin-top: 14px; background: rgba(16, 38, 54, 0.7); border: 1px solid rgba(6, 182, 212, 0.25); border-radius: 8px; padding: 12px 14px;">
+              <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--cyan-bright); font-weight: 700; margin-bottom: 6px;">
+                ⚡ 3-STEP EASY PHONE INSTALLATION:
+              </div>
+              <ol style="margin: 0; padding-left: 18px; font-size: 0.75rem; color: var(--text-normal); line-height: 1.55;">
+                <li><strong>Download</strong>: Scan the QR code or tap the green Download button above directly on your mobile device.</li>
+                <li><strong>Install</strong>: Open <code>Philip_Face_AI.apk</code> from your downloads. When Android prompts <em>"Install unknown apps"</em>, tap <strong>Settings &rarr; Allow from this source</strong>, then tap <strong>Install</strong>.</li>
+                <li><strong>Launch & Recognize</strong>: Open <strong>Philip Face AI</strong>, grant Camera permission, and enjoy real-time biometric face detection!</li>
+              </ol>
+            </div>
+
+            <!-- iOS Support note -->
+            <div style="margin-top: 10px; font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span><strong>Using iPhone / iOS?</strong> Open this web app in Safari &rarr; Tap <strong>Share</strong> &rarr; <strong>"Add to Home Screen"</strong> for a native standalone app!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Meta & Attribution Bar -->
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">
+          <span>Pentecost University &bull; Philip Antwi (PUIT24120002)</span>
+          <span>Ultralytics Model: <code>Exp Model (Kwabena)</code></span>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="border-top: 1px solid var(--border-subtle); padding: 12px 24px; background: rgba(6, 16, 23, 0.4); display: flex; justify-content: flex-end;">
+        <button class="btn-modal-cancel" onclick="closeMobileModal()">CLOSE</button>
       </div>
     </div>
   </div>
@@ -892,6 +1031,14 @@ html_template = f"""<!DOCTYPE html>
     // ========================================================
     // GRAPHS MODAL CONTROLS
     // ========================================================
+    function openMobileModal() {{
+      document.getElementById('mobileModal').classList.add('show');
+    }}
+
+    function closeMobileModal() {{
+      document.getElementById('mobileModal').classList.remove('show');
+    }}
+
     function openGraphsModal() {{
       document.getElementById('graphsModal').classList.add('show');
     }}
