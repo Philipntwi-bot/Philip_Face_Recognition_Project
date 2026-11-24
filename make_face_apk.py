@@ -69,8 +69,13 @@ print("✔ Copied web application and figures into APK assets/")
 manifest_content = """<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.pentecost.philip.faceai"
-    android:versionCode="1"
-    android:versionName="1.0">
+    android:versionCode="2"
+    android:versionName="1.1">
+
+    <!-- Explicit SDK Targeting for 100% Samsung Galaxy & Android 14+ Compatibility -->
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="34" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -78,9 +83,18 @@ manifest_content = """<?xml version="1.0" encoding="utf-8"?>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <!-- Make hardware features optional so all budget & flagship devices install smoothly -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+
+    <!-- Universal Screen & Density Support for Samsung Galaxy A-series -->
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true" />
 
     <application
         android:label="Philip Face AI"
@@ -250,7 +264,7 @@ for root, _, files in os.walk(BIN_DIR):
         if f.endswith(".class"):
             class_files.append(os.path.join(root, f))
 
-cmd_d8 = f'"{JAVA_EXE}" -cp "{D8_JAR}" com.android.tools.r8.D8 --output "{BUILD_DIR}" --lib "{ANDROID_JAR}" ' + " ".join([f'"{cf}"' for cf in class_files])
+cmd_d8 = f'"{JAVA_EXE}" -cp "{D8_JAR}" com.android.tools.r8.D8 --min-api 21 --output "{BUILD_DIR}" --lib "{ANDROID_JAR}" ' + " ".join([f'"{cf}"' for cf in class_files])
 res = subprocess.run(cmd_d8, shell=True, capture_output=True, text=True)
 if res.returncode != 0:
     print("D8 Error:", res.stderr)
@@ -291,6 +305,7 @@ print("9. Digitally signing APK with apksigner...")
 cmd_sign = (
     f'"{JAVA_EXE}" -jar "{APKSIGNER_JAR}" sign --ks "{KEYSTORE}" --ks-pass pass:{KEY_PASS} '
     f'--key-pass pass:{KEY_PASS} --ks-key-alias {ALIAS} '
+    f'--v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true '
     f'--out "{OUTPUT_APK}" "{ALIGNED_APK}"'
 )
 res = subprocess.run(cmd_sign, shell=True, capture_output=True, text=True)
